@@ -1,0 +1,43 @@
+<div class="container-fluid px-4">
+    <h1 class="mt-4"></h1>
+</div>
+<!-- Seccion Tablas-->
+<div class="card mb-4" style="background-color:#dadada;">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>Ordenes Pendientes
+    </div>&nbsp;
+
+    <div class="d-flex justify-content-end">
+        <a class="btn btn-danger" href="{% url 'orden_crear' %}"><i class="fa fa-ban" aria-hidden="true"></i> Nueva Orden </a>
+        &nbsp;
+    </div>
+    <br>
+
+    <div class="card-body">
+        <table id="datatablesSimple" border="1">
+            <thead>
+                <tr>
+                    <th>Mesa</th>
+                    <th>Fecha/Hora</th>
+                    <th>Total</th>
+                    <th>Mantenimiento</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in ordenes %}
+                <tr>
+                    <td style="vertical-align: super;" width="400" >{{ p.mesa }} </td>
+                    <td style="vertical-align: super;" width="200" align="center">{{ p.fechaHora}}</td>
+                    <td style="vertical-align: super;" width="200" align="center"> $ {{ p.total }}</td>
+                    <td style="vertical-align: super;" width="200" align="center">
+                        <a class="btn btn-danger" href="{% url 'menu_editar' p.id %}"><i class="fa fa-ban" aria-hidden="true"></i> Editar </a>
+                        &nbsp;
+                        <a class="btn btn-danger" href="{% url 'menu_borrar' p.id %}"><i class="fa fa-ban" aria-hidden="true"></i> Borrar </a>
+                        &nbsp;
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
