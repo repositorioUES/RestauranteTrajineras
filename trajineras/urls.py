@@ -1,9 +1,8 @@
 from django.urls import path
-
+from trajineras.views import *
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.views.static import serve
-from trajineras.views import *
 
 
 urlpatterns = [
@@ -18,5 +17,6 @@ urlpatterns = [
     path('general/orden-crear', CrearOrdenTemp, name='orden_crear'),
     path('general/orden-editar', ListadoOrdenTemp, name='orden_editar'),
     path('general/orden-borrar', ListadoOrdenTemp, name='orden_borrar'),
-
+   
+    
 ]
