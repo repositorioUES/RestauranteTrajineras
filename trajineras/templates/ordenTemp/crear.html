@@ -12,26 +12,41 @@
                         {%csrf_token%}
     
                         {{ form.as_p }}
-                        
-                        <h4>Comidas</h4>
-                        <table id="datatablesSimple" border="1">
-                            <tbody>
+
+                        <select id="menuSelect">
+                            <option value="nada"> ---------- </option>
+                            {% for m in menu %}
+                                <option value="{{m.pk}}-{{m.tipo}}-{{m.precio}}"> {{m.nombre}} </option>
+                            {% endfor %}
+                        </select> 
+                        <input type="number" id="cantInput" placeholder="Cantidad" min="1" max="2">
+                        <button  type="button" id="addButton" onclick="addElement()"> Agregar </button>
+
+                        <input type="text" id="pedido" name="pedido">
+
+                        <h4>Contenido de la Orden</h4>
+                        <table id="tablaOrden" border="1">
+                            <thead class="thead-dark">
                                 <tr>
-                                    <td>
-                                        <select id="sel-example"></select>
-                                    </td>
+                                  <th width="200" align="center">Nombre</th>
+                                  <th width="50" align="center">Precio</th>
+                                  <th width="50" align="center">Cantidad</th>
+                                  <th width="50" align="center">Quitar</th>
                                 </tr>
-                              
+                            </thead>
+                            <tbody id="tableBody">
+
                             </tbody>
                         </table>
 
+                        <br>
                         <div class="d-flex justify-content-end">
-                            <a class="btn btn-danger" href="{% url 'orden_lista' %}"><i class="fa fa-ban" aria-hidden="true"></i> Cancelar </a>
+                            <a class="btn btn-danger" href="{% url 'orden_lista' %}"> Cancelar </a>
                             &nbsp;
-                            <button  type="submit" class="btn btn-success float-right"><i class="fa fa-check" aria-hidden="true"></i> Crear </button>
+                            &nbsp;
+                            <button  type="submit" class="btn btn-success float-right"> Enviar Orden</button>
                         </div>
-                            
-
+        
                     </form>
 
                 </div>
@@ -40,21 +55,79 @@
     </div>
 </div>
 
-<Script>
+
+<script>
+    var body = "";
+    var ordenArr = [];
+
+    var id = '';
+    var nombre = '';
+    var precio = '';
+    var cantInput = '';
+    var pedido = document.getElementById('pedido');
     
-    const values = [{{document.menu}}]
-    const $select = document.getElementById("sel-example")
-    //empty option
-    const $option = document.createElement("option")
-    $option.value = ""
-    $option.innerHTML = "Please choose an option :)"
+    var select = document.getElementById('menuSelect');
+    select.addEventListener('change', function(){
+        var selectedOption = this.options[select.selectedIndex];
+        id = selectedOption.value.split('-')[0];
+        nombre = selectedOption.text;
+        precio = selectedOption.value.split('-')[2];
+    });
 
-    $select.appendChild($option)
+    function addElement(){
+      
+        cantInput = document.getElementById("cantInput").value;
+        if (nombre != '' && cantInput != '') {
+            var el = {'id':id, 'nombre':nombre, 'precio':precio, 'cantidad':cantInput.toString()}
 
-    values.forEach(obj => {
-    const $option = document.createElement("option")
-    $option.value = obj.id
-    $option.innerHTML = obj.text
-    $select.appendChild($option)
-    })
-</Script>
+            var exist = false
+            for (let i = 0; i < ordenArr.length; i++) {
+                if(ordenArr[i].id == el.id){
+                    exist = true
+                }
+            }
+
+            if (exist == false) {
+                ordenArr.push(el)
+                agregarFila(el)
+            }
+            
+        }
+    }
+
+    function agregarFila (orden) {
+        var deleteBtn = '<td> <button  type="button" onclick="quitarFila(' + orden.id + ')"> Eliminar </button> </td>'
+        body +='<tr> <td>'+ orden.nombre +'</td> <td align="center"> $' + orden.precio + '</td> <td align="center">' + orden.cantidad + '</td>' + deleteBtn + ' </tr> \n';
+        document.getElementById('tableBody').innerHTML = body;
+
+        document.getElementById("cantInput").value = '';
+        document.getElementById('menuSelect').value = "nada";
+        pedido.value = JSON.stringify(ordenArr, null, 2);
+    }
+
+    function quitarFila (id) {
+        document.getElementById('tableBody').innerHTML = ''; // Vaciar el HTML
+        body = '';
+        var ordenArrAux = [];
+
+        if (ordenArr.length > 0) {
+            for (let i = 0; i < ordenArr.length; i++) {
+                if (ordenArr[i].id != id) {
+                    ordenArrAux.push(ordenArr[i]);
+                } 
+            }
+
+            for (let i = 0; i < ordenArrAux.length; i++) {
+                if(ordenArrAux.length > 0 ){
+                    var deleteBtn = '<td> <button  type="button" onclick="quitarFila(' + ordenArrAux[i].id + ')"> Eliminar </button> </td>'
+                    body +='<tr> <td>'+ ordenArrAux[i].nombre +'</td> <td align="center"> $' + ordenArrAux[i].precio + '</td> <td align="center">' + ordenArrAux[i].cantidad + '</td>' + deleteBtn + '  </tr> \n';
+                }
+            }
+        }
+
+        ordenArr = ordenArrAux;
+
+        document.getElementById('tableBody').innerHTML = body;
+    }
+
+</script>

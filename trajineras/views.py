@@ -1,5 +1,6 @@
 from msilib.schema import ListView
 from django.shortcuts import get_object_or_404, redirect, render
+import json
 
 from trajineras.models import *
 from trajineras.forms import *
@@ -53,13 +54,18 @@ def ListadoOrdenTemp(request): # LISATDO ---------------------------------------
     return render(request,'ordenTemp/lista.html', {'ordenes' : ordenesTemp})
 
 def CrearOrdenTemp(request): # CRREAR ----------------------------------------------------------------------------
-
+    ordenJSON = request.POST.get('pedido')
+    
     menu = Menu.objects.filter(activo = True).order_by('nombre')
-    print(menu)
+
     if request.method == 'POST':
         form = OrdenTempForm(request.POST)
-        if form.is_valid():
-            form.save()
+        aList = json.loads(ordenJSON)
+        for m in aList:
+            print(m['nombre'] + ' ' + m['precio'] + ' ' + m['cantidad'])
+
+        # if form.is_valid():
+        #     form.save()
         return redirect('orden_lista')
     else:
         form = OrdenTempForm()
