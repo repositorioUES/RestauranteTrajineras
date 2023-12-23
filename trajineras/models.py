@@ -22,26 +22,25 @@ class Menu(models.Model):
 # Modelo del ORDEN_TEMP -------------------------------------------------------------------
 class OrdenTemp(models.Model):
     id = models.AutoField(primary_key=True)
-    mesa = models.IntegerField(null=True, blank=True)
+    mesa = models.IntegerField()
     fechaHora = models.DateTimeField(auto_now_add = True)# fecha y hora de creacion de la orden
     cocina = models.BooleanField(blank=True,  default=0) # esta terminada la parte de cocina de la orden
     bebida = models.BooleanField(blank=True,  default=0) # esta termianda la parte de bebida de la orden
     cobrable = models.BooleanField(blank=True, default=0) # esta lista la orden para ser cobrada
     total = models.DecimalField(max_digits = 10, decimal_places= 2)
-    cliente = models.CharField(max_length=150,help_text="Nombre del cliente")
+    cliente = models.CharField(max_length=150,help_text="")
     
     def __str__(self): #Para que retorne el nombre y no el Id
-        return "Mesa:" + self.mesa + " - Fecha:" + self.fechaHora
+        return "Mesa:" + str(self.mesa) + " - Fecha:" + str(self.fechaHora)
 #FIN ORDEN_TEMP    
     
 # Modelo del ORDEN_MENU -------------------------------------------------------------------
 class OrdenMenu(models.Model):
     id = models.AutoField(primary_key=True)
-    idOrden = models.ForeignKey('OrdenTemp', on_delete = models.PROTECT, null=True)
-    idMenu = models.ForeignKey('Menu', on_delete = models.PROTECT, null=True)
+    idOrden = models.IntegerField()
+    idMenu = models.IntegerField()
 
-    cantidad = models.IntegerField(null=True, blank=True)
+    cantidad = models.IntegerField()
+    nuevo = models.BooleanField(default=0) # Es un producto agregado despues o es del pedido original?
     
-    def __str__(self): #Para que retorne el nombre y no el Id
-        return "Orden:" + self.idOrden + " - Menu:" + self.idMenu
 #FIN ORDEN_MENU    

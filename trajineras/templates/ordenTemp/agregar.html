@@ -10,33 +10,45 @@
             <div class="card bg-light text-dark" style="border-radius: 0.8rem; border-color: #eb4e1b; border-width: 4px;">
                 <div class="card-body" style="border-radius: 0.8rem; background-color: #ffffff; align-items: center; align-content: center;">
               
-                    <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Nueva Orden</b></h4>
+                    <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Agregar Contenido a la Orden</b></h4>
+                    <h6 class="font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Mesa:</b> {{ orden.mesa}} - {{ orden.fechaHora}}</h6>
+                    <h6 class="font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Total Actual:</b> ${{ orden.total}}</h6>
+                    <div class="table-responsive p-0">
 
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th align="center">Nombre</th>
+                                    <th align="center">Precio</th>
+                                    <th align="center">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for co in currContent %}
+                                    {% if co.nuevo == 1 %}
+                                    <tr style="background-color: #ffa384;">
+                                    {% else %}
+                                    <tr>
+                                    {% endif %}
+                                        <td>
+                                            <h6>{{co.nombre}}</h6>
+                                        </td>
+                                        <td align="center">
+                                            <h6 c>${{co.precio}}</h6>
+                                        </td>
+                                        <td align="center">
+                                            <h6>X {{co.cantidad}}</h6>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <br>
                     <form action="" method="post">
  
                         {%csrf_token%}
 
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center" style="vertical-align: middle;">
-                            <div class="input-group input-group-outline" style="width: 70px;">
-                                <label for="id_mesa">Mesa* </label>
-                            </div>
-                            <div class="input-group input-group-outline">
-                              <!-- <label class="form-label">N° de Mesa</label> -->
-                              <input type="number" name="mesa" class="form-control" required="" id="id_mesa" min="1" max="99">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="ms-md-auto pe-md-3 d-flex align-items-center" style="vertical-align: middle;">
-                            <div class="input-group input-group-outline" style="width: 70px;">
-                                <label for="id_mesa">Cliente</label>
-                            </div>
-                            <div class="input-group input-group-outline">
-                              <!-- <label class="form-label">Cliente</label> -->
-                              <input type="text" name="cliente" class="form-control" maxlength="150" required="" id="id_cliente">
-                            </div>
-                        </div>
-    
-                        <br>
                         <div class="ms-md-auto pe-md-3 d-flex align-items-center" style="vertical-align: middle;">
                             <div class="input-group input-group-outline">
                                 <select id="menuSelect" class="form-select-lg">
@@ -57,7 +69,7 @@
 
                         <input type="text" id="pedido" name="pedido">
  
-                        <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Contenido de la Orden</b></h4>
+                        <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Contenido Nuevo</b></h4>
                         
                         <table class="table align-items-center mb-0">
                             <thead>
@@ -78,7 +90,7 @@
                             <a class="btn btn-danger" href="{% url 'orden_lista' %}"> Cancelar </a>
                             &nbsp;
                             &nbsp;
-                            <button  type="submit" class="btn btn-success float-right"> Enviar Orden</button>
+                            <button  type="submit" class="btn btn-success float-right"> Actualizar </button>
                         </div>
         
                     </form>
@@ -157,15 +169,13 @@
 
             for (let i = 0; i < ordenArrAux.length; i++) {
                 if(ordenArrAux.length > 0 ){
-                    var deleteBtn = '<td> <button  type="button" class="btn btn-outline-danger" onclick="quitarFila(' + ordenArrAux.id + ')" style="margin: 0px;"> <i class="fa fa-minus" aria-hidden="true" tool></i> </button> </td>'
-                    // var deleteBtn = '<td> <button  type="button" onclick="quitarFila(' + ordenArrAux[i].id + ')"> Eliminar </button> </td>'
+                    var deleteBtn = '<td> <button  type="button" onclick="quitarFila(' + ordenArrAux[i].id + ')"> Eliminar </button> </td>'
                     body +='<tr> <td>'+ ordenArrAux[i].nombre +'</td> <td align="center"> $' + ordenArrAux[i].precio + '</td> <td align="center">' + ordenArrAux[i].cantidad + '</td>' + deleteBtn + '  </tr> \n';
                 }
             }
         }
 
         ordenArr = ordenArrAux;
-        pedido.value = JSON.stringify(ordenArr, null, 2);
 
         document.getElementById('tableBody').innerHTML = body;
     }

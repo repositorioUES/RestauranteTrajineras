@@ -1,43 +1,124 @@
-<div class="container-fluid px-4">
-    <h1 class="mt-4"></h1>
-</div>
-<!-- Seccion Tablas-->
-<div class="card mb-4" style="background-color:#dadada;">
-    <div class="card-header">
-        <i class="fas fa-table me-1"></i>Ordenes Pendientes
-    </div>&nbsp;
 
-    <div class="d-flex justify-content-end">
-        <a class="btn btn-danger" href="{% url 'orden_crear' %}"><i class="fa fa-ban" aria-hidden="true"></i> Nueva Orden </a>
-        &nbsp;
-    </div>
-    <br>
+{% extends 'base.html' %}
 
-    <div class="card-body">
-        <table id="datatablesSimple" border="1">
-            <thead>
-                <tr>
-                    <th>Mesa</th>
-                    <th>Fecha/Hora</th>
-                    <th>Total</th>
-                    <th>Mantenimiento</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in ordenes %}
-                <tr>
-                    <td style="vertical-align: super;" width="400" >{{ p.mesa }} </td>
-                    <td style="vertical-align: super;" width="200" align="center">{{ p.fechaHora}}</td>
-                    <td style="vertical-align: super;" width="200" align="center"> $ {{ p.total }}</td>
-                    <td style="vertical-align: super;" width="200" align="center">
-                        <a class="btn btn-danger" href="{% url 'menu_editar' p.id %}"><i class="fa fa-ban" aria-hidden="true"></i> Editar </a>
-                        &nbsp;
-                        <a class="btn btn-danger" href="{% url 'menu_borrar' p.id %}"><i class="fa fa-ban" aria-hidden="true"></i> Borrar </a>
-                        &nbsp;
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
+{% load static %}
+
+{% block content %}
+
+<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2">
+    <div class="shadow-primary border-radius-lg pt-4 pb-3" style="background-color: #eb4e1b;">
+        <table class="table align-items-center mb-0" >
+            <tr>
+                <td width="250" style="vertical-align: middle;">
+                    <h6 class="text-white text-capitalize ps-3">Ordenes Pendientes</h6>
+                </td>
+                <td >
+                    <a class="btn btn-outline-success btn-sm mb-0 me-3" style="color: white; border-color: white;" href="{% url 'orden_crear' %}">
+                        <i class="material-icons text-lg">add</i>&nbsp;
+                        Orden Nueva 
+                    </a>
+                    <a class="btn btn-primary mb-0" style="color: white; background-color: #000;" href="{% url 'orden_crear' %}">
+                        <i class="material-icons text-lg">add</i>&nbsp;
+                        Orden NUeva
+                    </a>
+                </td>
+            </tr>
         </table>
     </div>
 </div>
+
+<div class="card-body px-0 pb-2">
+    <div class="table-responsive p-0">
+
+      <table class="table align-items-center mb-0">
+        <thead>
+          <tr>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Mesa / Fecha y Hora</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Estado</th>
+            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Mantenimiento</th>
+            <!-- <th class="text-secondary opacity-7"></th> -->
+          </tr>
+        </thead>
+        <tbody>
+            {% for orden in ordenes %}
+            <tr>
+                <td>
+                    <div class="d-flex px-2 py-1">
+                        <!-- <div>
+                        <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3 border-radius-lg" alt="user1">
+                        </div> -->
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-sm">Mesa {{orden.mesa}} - Cliente: {{orden.cliente}}</h6>
+                            <p class="text-xs text-secondary mb-0">{{orden.fechaHora}}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <h6 class="mb-0 text-sm">${{orden.total}}</h6>
+                    <!-- <p class="text-xs font-weight-bold mb-0">${{orden.total}}</p> -->
+                    <!-- <p class="text-xs text-secondary mb-0">Organization</p> -->
+                </td>
+                <td class="align-middle text-center text-sm">
+                    <span class="badge badge-sm bg-gradient-success">Cocina</span>
+                    <span class="badge badge-sm bg-gradient-success">Bebida</span>
+                </td>
+    
+                <td class="align-middle">
+                    <div class="ms-auto text-end">
+                        
+                        <a href="#" onclick="openModal('{{ orden.id }}')" class="btn btn-link text-info text-gradient px-3 mb-0"  >
+                            <i class="material-icons text me-2">visibility</i>
+                            Detalle
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="{% url 'orden_borrar' orden.id %}">
+                            <i class="material-icons text-sm me-2">delete</i>
+                            Eliminar
+                        </a>
+                        &nbsp;
+                        <a class="btn btn-link text-dark px-3 mb-0" href="#"><i class="material-icons text-sm me-2">edit</i>Edit</a>
+                    </div>
+                   
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <dialog id="popup" class="modal-fade" style="border-radius: 0.8rem; border-color: #eb4e1b; align-items: center; align-content: center;">
+        <div id="mod">
+
+        </div>
+    </dialog>
+
+  </div>
+  
+
+  <script>
+    let modal = document.getElementById("popup");
+
+    function openModal (id){
+        $("#mod").html(""); // Cuerpo principal del modal
+
+        var request = $.ajax({
+            type: "GET",
+            url: "{% url 'orden_detalle' %}",
+            data: {
+                "id":id
+            },
+        });
+        request.done(function(response){
+            $("#mod").html(response); // sobreescribir el contenido del modal segun la respuesta de la consulta
+            modal.showModal();
+        });
+    }
+
+    function cerrar_modal(){
+        modal.close();
+    }
+    
+  </script>
+
+  {% endblock content %}

@@ -32,17 +32,29 @@ class OrdenTempForm(forms.ModelForm):
 		model = OrdenTemp
 		fields = [
 			 'mesa',
-			#  'fechaHora',
-			#  'cocina',
-			#  'bebida',
-			#  'cobrable',
 			 'cliente'
 		]
 		labels = {
 			'mesa': 'Mesa',
-			# 'fechaHora':'Fecha',
-			# 'cocina':'Cocina',
-			# 'bebida':'Bebida',
-			# 'cobrable':'Cobrable',
 			'cliente':'Cliente'
-		}		
+		}	
+		widgets = {
+			'mesa':forms.NumberInput (attrs={'class':'input-group input-group-outline'}),
+			'cliente':forms.TextInput(attrs={'class':'form-contol'}),
+		}	
+
+class OrdenMenuForm(forms.ModelForm):
+	class Meta:
+		model = OrdenMenu
+		fields = [
+			'idOrden',
+			'idMenu',
+			'cantidad',
+			'nuevo'
+		]
+		labels = {
+			'idOrden': 'Orden',
+			'idMenu': 'Menu',
+			'cantidad': 'Cantidad',
+			'nuevo': 'Nuevo'
+		}	

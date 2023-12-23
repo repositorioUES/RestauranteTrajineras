@@ -15,8 +15,9 @@ urlpatterns = [
     
     path('general/orden-lista', ListadoOrdenTemp, name='orden_lista'),
     path('general/orden-crear', CrearOrdenTemp, name='orden_crear'),
-    path('general/orden-editar', ListadoOrdenTemp, name='orden_editar'),
-    path('general/orden-borrar', ListadoOrdenTemp, name='orden_borrar'),
+    path('general/orden-agregar/<int:pk>', AgregarContenido, name='orden_agregar'),
+    path('general/orden-detalle',DetalleOrdenTemp, name='orden_detalle'),
+    path('general/orden-borrar/<int:pk>', BorrarOrdenTemp, name='orden_borrar'),
    
     
 ]
