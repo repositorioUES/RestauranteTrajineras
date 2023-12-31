@@ -1,0 +1,442 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="col-md-8 mb-lg-3 mb-4 offset-md-2">
+    <div class="card mt-4" style="border-radius: 0.8rem; border-color: #eb4e1b; border-width: 4px;">
+        <!-- Contenido -->
+        <div class="card-body p-3" style="background-color: rgb(240, 240, 240); border-radius: 0.8cap;">
+            <form action="" method="post">
+ 
+                {%csrf_token%}
+                
+                <div class="row" style="margin-bottom: 1cap;">
+                    <div class="col-md-12 mb-md-0 mb-1" >
+                        <div class="card">
+                            <div style="margin-left: 1cap; margin-right: 1cap;">
+                                <h5 class="text-center font-weight-light my-4"><b>Agregar Contenido a la Orden</b></h5>
+                                <h5 class="font-weight-light my-4"><b>Mesa: {{ comanda.mesa}}</b> - {{ comanda.fechaHora}} - <b>Total Actual:</b> ${{ comanda.total}}</h5>
+                                
+                                <div class="table-responsive p-0" >
+
+                                    <table class=" table-form-size">
+                                        <thead>
+                                            <tr>
+                                                <th align="center">Nombre</th>
+                                                <th align="center">Precio</th>
+                                                <th align="center">Cantidad</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for orden in ordenes %}
+                                                {% for contenido in contenidos %}
+                                                    {% if contenido.idOrden == orden.id %}
+                                                        {% if orden.agregado == 1 %}
+                                                        <tr style="background-color: #ffa384;">
+                                                        {% else %}
+                                                        <tr>
+                                                        {% endif %}
+                                                            <td>
+                                                                <h6>{{contenido.nombre}} {% if contenido.nota %} ( {{contenido.nota}} ) {% endif %}</h6>
+                                                            </td>
+                                                            <td align="center">
+                                                                <h6 >${{contenido.precio}}</h6>
+                                                            </td>
+                                                            <td align="center">
+                                                                <h6>X {{contenido.cantidad}}</h6>
+                                                            </td>
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                <tr>
+                                                    <td>
+                    
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" >
+                    <div class="col-md-12 mb-md-0 mb-1">
+                        <div class="card">
+                            <div class="card-body pt-0 p-3 text-center">
+                                <div class="input-group input-group-outline ">
+                                    <h6 class="text-center font-weight-light my-4" style="padding: 0ch; margin-left: 2cap;"><b>Categorías</b></h6>
+                                    <div class="input-group input-group-outline">
+                                        <div class="form-check " align="center">
+                                            <h6 class="mb-0">Comidas</h6>
+                                            <input class="radio-style" type="radio" onchange="cambiarCategoria('c')" name="radio-group" id="food">
+                                        </div>
+                                        <div class="form-check" align="center">
+                                            <h6 class="mb-0">Bebidas</h6>
+                                            <input class="radio-style" type="radio" onchange="cambiarCategoria('b')" name="radio-group" id="drink">
+                                        </div>
+                                        <div class="form-check" align="center">
+                                            <h6 class="mb-0">Otros</h6>
+                                            <input class="radio-style" type="radio" onchange="cambiarCategoria('o')" name="radio-group" id="otros">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+                <div class="row" >
+                    <div class="col-md-12 mb-md-0 mb-1" style="background-color: white; border-radius: 0.8cap; margin-top: 1cap;">
+                        <div class="row" style="margin-top: 1cap;">
+                            <div class="col-md-6 mb-md-0 mb-1">
+                                <div class="card">
+                                    <div class="input-group input-group-outline">
+                                        <select id="menuSelect" class="form-select-lg select-form-size">
+                                            <option value="nada">------- Seleccione Categoría ------- </option>
+                                        </select> 
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="card">
+                                    <div class="">
+                                        <div class="input-group input-group-outline" style="height: 4cap;">
+                                            <input type="text" placeholder="Notas" id="notaInput" class="form-control">
+                                            <input type="text" id="pedido" name="pedido">
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="margin-bottom: 1cap; margin-top: 1cap; background-color: white; border-radius: 0.8cap;" >
+                                <div class="card">
+                                    <div class="input-group input-group-outline">
+                                        <input type="number" id="cantInput" class="form-control number-input-form-size"  placeholder="Cantidad" min="1" max="99">
+                                        &nbsp;
+                                        <button  type="button" class="btn btn-success" id="addButton" onclick="addElement()" style="margin: 0px;"> 
+                                            <i class="fa fa-plus" aria-hidden="true" tool></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 mb-md-0 mb-1" style="vertical-align: middle;">
+                        <div class="card">
+                            <div class="card-header mx-4 p-3 text-center">
+                                <h6 class="text-center mb-0">Contenido de la Orden</h6>
+                            </div>
+                            <div class="card-body pt-0 p-3 text-center">
+                                <table class=" table-form-size">
+                                    <thead>
+                                        <tr align="center">
+                                            <th align="center">Quitar</th>
+                                            <th align="center">Nombre</th>
+                                            <th align="center">Precio</th>
+                                            <th align="center">Cantidad</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody">
+    
+                                    </tbody>
+                                </table>
+    
+                                <br>
+                                <div class="d-flex justify-content-center">
+                                    <a class="btn btn-danger" href="{% url 'orden_lista' %}"> Cancelar </a>
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    &nbsp;
+                                    <button  type="submit" class="btn btn-success float-right"> Enviar Orden</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 
+            </form>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-12 col-md-6 offset-md-3">
+            <div class="card bg-light text-dark" style="border-radius: 0.8rem; border-color: #eb4e1b; border-width: 4px;">
+                <div class="card-body" style="border-radius: 0.8rem; background-color: #ffffff; align-items: center; align-content: center;">
+              
+                    <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Agregar Contenido a la Orden</b></h4>
+                    <h5 class="font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Mesa: {{ comanda.mesa}}</b> - {{ comanda.fechaHora}} - <b>Total Actual:</b> ${{ comanda.total}}</h5>
+           
+                    <div class="table-responsive p-0" >
+
+                        <table class=" table-form-size">
+                            <thead>
+                                <tr>
+                                    <th align="center">Nombre</th>
+                                    <th align="center">Precio</th>
+                                    <th align="center">Cantidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for orden in ordenes %}
+                                    {% for contenido in contenidos %}
+                                        {% if contenido.idOrden == orden.id %}
+                                            {% if orden.agregado == 1 %}
+                                            <tr style="background-color: #ffa384;">
+                                            {% else %}
+                                            <tr>
+                                            {% endif %}
+                                                <td>
+                                                    <h6>{{contenido.nombre}} {% if contenido.nota %} ( {{contenido.nota}} ) {% endif %}</h6>
+                                                </td>
+                                                <td align="center">
+                                                    <h6 >${{contenido.precio}}</h6>
+                                                </td>
+                                                <td align="center">
+                                                    <h6>X {{contenido.cantidad}}</h6>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tr>
+                                        <td>
+        
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <form action="" method="post">
+ 
+                        {%csrf_token%}
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center" style="background-color: #e9e9e9; border-radius: 0.8cap;">
+                            <div class="input-group input-group-outline">
+                                <h6 class="text-center font-weight-light my-4" style="padding: 0cap; margin-left: 2cap;"><b>Categorías</b></h6>
+                                <div class="input-group input-group-outline">
+                                    <div class="form-check " align="center">
+                                        <h6 class="mb-0">Comidas</h6>
+                                        <input class="radio-style" type="radio" onchange="cambiarCategoria('c')" name="radio-group" id="food">
+                                    </div>
+                                    <div class="form-check" align="center">
+                                        <h6 class="mb-0">Bebidas</h6>
+                                        <input class="radio-style" type="radio" onchange="cambiarCategoria('b')" name="radio-group" id="drink">
+                                    </div>
+                                    <div class="form-check" align="center">
+                                        <h6 class="mb-0">Otros</h6>
+                                        <input class="radio-style" type="radio" onchange="cambiarCategoria('o')" name="radio-group" id="otros">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <br>
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center" style="vertical-align: middle;">
+                            <div class="input-group input-group-outline">
+                                <select id="menuSelect" class="form-select-lg select-form-size">
+                                    <option value="nada">------- Seleccione Categoría ------- </option>
+                                </select> 
+                                &nbsp;
+                                <input type="number" id="cantInput" class="form-control number-input-form-size"  placeholder="Cantidad" min="1" max="99">
+                                &nbsp;
+                                <button  type="button" class="btn btn-success" id="addButton" onclick="addElement()" style="margin: 0px;"> 
+                                    <i class="fa fa-plus" aria-hidden="true" tool></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="ms-md-auto pe-md-3 d-flex align-items-center" style="margin-top: 1cap;">
+                            <div class="input-group input-group-outline">
+                                <input type="text" placeholder="Notas" id="notaInput" class="form-control select-form-size">
+                            </div>
+                        </div>
+
+
+                        <input type="text" id="pedido" name="pedido">
+ 
+                        <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Contenido Nuevo</b></h4>
+                        
+                        <table class=" table-form-size">
+                            <thead>
+                                <tr align="center">
+                                    <th align="center">Nombre</th>
+                                    <th align="center">Precio</th>
+                                    <th align="center">Cantidad</th>
+                                    <th align="center">Quitar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+
+                            </tbody>
+                        </table>
+
+                        <br>
+                        <div class="d-flex justify-content-center">
+                            <button  type="submit" class="btn btn-success float-right"> Agregar </button>
+                            &nbsp;
+                            &nbsp;
+                            <a class="btn btn-danger" href="{% url 'orden_lista' %}"> Cancelar </a>
+                        </div>
+        
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+
+<script>
+    document.getElementById("pedido").type ="hidden"; // deshabilitar.
+
+
+    var tabla = "";
+    var ordenArr = [];
+
+    var id = '';
+    var nombre = '';
+    var precio = '';
+    var tipo = '';
+    var cantInput = '';
+    var pedido = document.getElementById('pedido');
+    
+    var select = document.getElementById('menuSelect');
+    select.addEventListener('change', function(){
+        var selectedOption = this.options[select.selectedIndex];
+        id = selectedOption.value.split('-')[0];
+        nombre = selectedOption.text;
+        precio = selectedOption.value.split('-')[2];
+        tipo = selectedOption.value.split('-')[1];
+    });
+
+    function addElement(){
+      
+        cantInput = document.getElementById("cantInput").value;
+        nota = document.getElementById("notaInput").value;
+        if (nombre != '' && cantInput > 0) {
+            var el = {'id':id, 'nombre':nombre, 'precio':precio, 'cantidad':cantInput.toString(), 'nota': nota, 'tipo': tipo}
+
+            var exist = false
+            for (let i = 0; i < ordenArr.length; i++) {
+                if(ordenArr[i].id == el.id){
+                    exist = true
+                }
+            }
+
+            if (exist == false) {
+                ordenArr.push(el)
+                agregarFila(el)
+            }
+            
+        }
+    }
+
+    function agregarFila (orden) {
+        actualizarTabla(orden);
+
+        document.getElementById("cantInput").value = '';
+        document.getElementById("notaInput").value = '';
+        document.getElementById('menuSelect').value = "nada";
+        pedido.value = JSON.stringify(ordenArr, null, 2);
+    }
+
+    function quitarFila (id) {
+        document.getElementById('tableBody').innerHTML = ''; // Vaciar el HTML
+        tabla = '';
+        var ordenArrAux = [];
+
+        if (ordenArr.length > 0) {
+            for (let i = 0; i < ordenArr.length; i++) {
+                if (ordenArr[i].id != id) {
+                    ordenArrAux.push(ordenArr[i]);
+                }
+            }
+
+            for (let i = 0; i < ordenArrAux.length; i++) {
+                if(ordenArrAux.length > 0 ){
+                    actualizarTabla(ordenArrAux[i]);
+                }
+            }
+        }
+
+        ordenArr = ordenArrAux;
+        pedido.value = JSON.stringify(ordenArr, null, 2);
+
+        document.getElementById('tableBody').innerHTML = tabla;
+    }
+
+    function cambiarCant(id, operacion){
+        document.getElementById('tableBody').innerHTML = ''; // Vaciar el HTML
+        tabla = '';
+
+        for (let i = 0; i < ordenArr.length; i++) {
+            if(ordenArr[i].id == id){
+                if(operacion == 1)
+                    ordenArr[i].cantidad++;
+                else if(ordenArr[i].cantidad > 1)
+                    ordenArr[i].cantidad--;
+            }
+            agregarFila(ordenArr[i]);
+        }
+
+    }
+
+
+    function actualizarTabla(orden){
+        let btnMinus = '<a class="btn btn-danger btn-form-size" onclick="cambiarCant(' + orden.id + ', 0)">'+
+                            '<i class="material-icons text-lg">expand_more</i>'+
+                        '</a> &nbsp;';
+
+        let btnPlus = ' &nbsp; <a class="btn btn-success btn-form-size" onclick="cambiarCant(' + orden.id + ', 1)">'+
+                            '<i class="material-icons text-lg">expand_less</i>'+
+                        '</a>';
+
+        let deleteBtn = '<td align="center">'+
+                            '<button  type="button" class="btn btn-outline-danger" onclick="quitarFila(' + orden.id + ')" style="margin: 0px;">'+
+                                '<i class="fa fa-trash" aria-hidden="true" tool></i>'+
+                            '</button>'+
+                        '</td>';
+        let notaStr = " {% if orden.nota != '' %} ( " + orden.nota + " ) {% endif %}";
+
+        tabla +='<tr>'+
+                    deleteBtn +
+                    '<td>'+ orden.nombre + notaStr + '</td>'+
+                    '<td align="center"> $' + orden.precio + '</td>'+
+                    '<td align="center">' + btnMinus + orden.cantidad + btnPlus + '</td>'+
+                ' </tr> \n';
+
+        document.getElementById('tableBody').innerHTML = tabla;
+    }
+
+
+    function cambiarCategoria(cat){
+        $("#menuSelect").html(""); // Cuerpo principal del modal
+
+        var request = $.ajax({
+            type: "GET",
+            url: "{% url 'menu_por-tipo' %}",
+            data: {
+                "tipo": cat
+            },
+        });
+        request.done(function (response) {
+            $("#menuSelect").html(response); // sobreescribir el contenido del modal segun la respuesta de la consulta
+        });
+    }
+
+</script>
+
+{% endblock content %}

@@ -1,0 +1,23 @@
+<div align="right">
+    <a class="btn btn-danger" id="btn-cerrar" onclick="return cerrar_delete_modal()"><i class="fa fa-close " aria-hidden="true"></i> </a>
+</div>
+
+<div style="padding: 0ch; margin: 0ch;" align="center">
+    <div style="padding: 0ch; margin: 0ch;">
+        <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;">
+            Eliminar Orden: <b>Mesa {{ comanda.mesa }}</b> - {{ comanda.fechaHora}}
+        </h4>
+        <h4 class="text-center font-weight-light my-4" style="padding: 0ch; margin: 0ch;"><b>Total: </b>${{ comanda.total }}</h4>
+
+        <h5><b>La Orden y su contenido serán eliminados, ¿Desea continuar? </b></h5>
+
+
+    </div>
+</div>
+<br>
+<div align="center">
+    <a class="btn btn-primary mb-0" style="color: white; background-color: #000;" href="{% url 'orden_borrar' comanda.pk %}">
+        <i class="material-icons text-lg">delete</i>
+        Elimiar
+    </a>
+</div>

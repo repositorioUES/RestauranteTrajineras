@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<!-- Contenedor principal -->
+<div class="col-md-12 mb-lg-0 mb-4">
+    <div class="card mt-4">
+
+        <!-- Encabezado -->
+        <div  style="background-color: #eb4e1b;border-radius: 0.8cap;">
+            <div class="row">
+                <div class="col-10 d-flex align-items-center" >
+                    <h6 class="mb-0 text-white" style="padding: 1.5cap;"> Ordenes para Cocinar</h6>
+                    
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contenido -->
+        <div class="card-body p-3" style="background-color: rgb(219, 219, 219); border-radius: 0.8cap;">
+            <div class="row" >
+                <div class="col-md-6 mb-md-0 mb-4">
+                  <div class="card">
+                    <div class="card-header mx-4 p-3 text-center">
+                        <h6 class="text-center mb-0">Pendientes ({{cantPend}})</h6>
+                        <hr class="horizontal dark my-3">
+                    </div>
+                    <div class="card-body pt-0 p-3 text-center">
+                        {% for orden in ordenes %}
+
+                            {% for comanda in comandas %}
+
+                            {% if comanda.id == orden.comanda_id and orden.cocina == 1 %}
+                            <div class="alert alert-dark text-white" align="left" role="alert">
+
+                                <div class="table-form-size" style="margin-bottom: 0.5cap;">
+                                    <div class="row">
+                                        <div class="pedido-card-size">
+                                            <h6 class=" mb-0 text-white" style="margin-left: 1cap;">Mesa {{comanda.mesa}} - {{comanda.fechaHora}}</h6>
+                                        </div>
+                                        <div class="info-card-size" align="right">
+                                            <a class="btn btn-outline-light btn-sm mb-0 me-3"  style="margin-right: 0cap;" href="{% url 'cocina_finalizar' orden.pk %}" title="Dar por Finlaizada la Parte de Cocina">
+                                                Finalizar  
+                                                <i class="material-icons text-sm">east</i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group input-group-outline">
+                                    <div>
+                                        <ul>
+                                        {% for contenido in contenidos %}
+                                            {% if contenido.idOrden == orden.id %}
+                                                <li>x{{contenido.cantidad}} - {{contenido.nombre}} {% if contenido.nota %} ( {{contenido.nota}} ) {% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </ul>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% endfor %}
+
+                        {% endfor %}
+                    </div>
+                </div>
+                  
+                </div>
+                <div class="col-md-6">
+                  <div class="card">
+                    <div class="card-header mx-4 p-3 text-center">
+                        <h6 class="text-center mb-0">Completadas</h6>
+                        <hr class="horizontal dark my-3">
+                    </div>
+                    <div class="card-body pt-0 p-3 text-center">
+                        {% for orden in ordenes %}
+
+                            {% for comanda in comandas %}
+                            
+                            {% if comanda.id == orden.comanda_id and orden.cocina == 2 %}
+                        
+                            <div class="alert alert-success text-white" align="left" role="alert">
+
+                                <div class="table-form-size" style="margin-bottom: 0.5cap;">
+                                    <div class="row">
+                                        <div class="pedido-card-size" >
+                                            <a class="btn btn-outline-light btn-sm mb-0 me-3"  style="margin-left: 1cap;" title="Lista para Entregar">
+                                                <i class="material-icons text-sm">check</i>
+                                                Lista para Entregar 
+                                            </a>
+                                        </div>
+                                        <div class="info-card-size" align="right">
+                                            <h6 class=" mb-0 text-white" style="margin-left: 1cap;">Mesa {{comanda.mesa}} - {{comanda.fechaHora}}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="input-group input-group-outline">
+                                    <div >
+                                        <ul>
+                                        {% for contenido in contenidos %}
+                                            {% if contenido.idOrden == orden.id %}
+                                                <li>x{{contenido.cantidad}} - {{contenido.nombre}} {% if contenido.nota %} ( {{contenido.nota}} ) {% endif %}</li>
+                                            {% endif %}
+                                        {% endfor %}
+                                        </ul>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% endfor %}
+
+                        {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

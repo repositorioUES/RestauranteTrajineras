@@ -1,0 +1,10 @@
+{% if tipo == 'c' %}
+<option value="nada">------- Comidas ------- </option>
+{% elif tipo == 'b' %}
+<option value="nada">------- Bebidas ------- </option>
+{% else %}
+<option value="nada">------- Otros ------- </option>
+{% endif %}
+{% for m in menu %}
+    <option value="{{m.pk}}-{{m.tipo}}-{{m.precio}}"> {{m.nombre}} </option>
+{% endfor %}

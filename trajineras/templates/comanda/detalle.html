@@ -1,0 +1,73 @@
+<div>
+    <table class="table align-items-center mb-0">
+        <tr>
+            <td>
+                <a class="btn btn-info" style="align-self: center;" href="{% url 'orden_agregar' comanda.pk %}">
+                    <i class="fa fa-plus" aria-hidden="true" tool></i>
+                 </a>
+            </td>
+            <td align="right">
+                <a class="btn btn-danger" id="btn-cerrar" onclick="return cerrar_modal()">
+                    <i class="fa fa-close "aria-hidden="true"></i> 
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div style="padding: 0ch; margin: 0ch;" align="center">
+    <div style="padding: 0ch; margin: 0ch;">
+        <h4 class="text-center font-weight-light my-4" style="padding: 0cap; margin: 0cap;">
+            Orden: <b>Mesa {{ comanda.mesa }}</b> - {{ comanda.fechaHora}}
+        </h4>
+        <h4 class="text-center font-weight-light my-4" style="padding: 0cap; margin: 0cap;"><b>Total: </b>${{ comanda.total }}</h4>
+
+        <div class="card-body" align="center" style="margin: 0cap; padding: 0cap;">
+            <label><b>Contenido de la Orden</b></label>
+            <div class="table-responsive p-0" >
+
+                <table class=" table-form-size">
+                    <thead>
+                        <tr>
+                            <th align="center">Nombre</th>
+                            <th align="center">Precio</th>
+                            <th align="center">Cantidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for orden in ordenes %}
+                            {% for contenido in contenidos %}
+                                {% if contenido.idOrden == orden.id %}
+                                    {% if orden.agregado == 1 %}
+                                    <tr style="background-color: #ffa384;">
+                                    {% else %}
+                                    <tr>
+                                    {% endif %}
+                                        <td>
+                                            <h6>{{contenido.nombre}} {% if contenido.nota %} ( {{contenido.nota}} ) {% endif %}</h6>
+                                        </td>
+                                        <td align="center">
+                                            <h6 c>${{contenido.precio}}</h6>
+                                        </td>
+                                        <td align="center">
+                                            <h6>X {{contenido.cantidad}}</h6>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div align="center">
+    <a class="btn btn-info" style="align-self: center;" href="{% url 'orden_agregar' comanda.pk %}">
+        <i class="fa fa-plus" aria-hidden="true"></i>
+        Agregar 
+    </a>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+    <a class="btn btn-danger" id="btn-cerrar" onclick="return cerrar_modal()"><i class="fa fa-close" aria-hidden="true"> Cerrar</i> </a>
+</div>

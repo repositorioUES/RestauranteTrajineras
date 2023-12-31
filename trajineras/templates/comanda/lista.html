@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+
+<!-- Contenedor principal -->
+<div class="col-md-12 mb-lg-0 mb-4">
+    <div class="card mt-4">
+
+        <!-- Encabezado -->
+        <div  style="background-color: #eb4e1b;border-radius: 0.8cap;">
+            <div class="row">
+                <div class="col-10 d-flex align-items-center" >
+                    <h6 class="mb-0 text-white" style="padding: 1.5cap;"> Ordenes Pendientes</h6>
+                    &nbsp;&nbsp;&nbsp;
+                    <a class="btn bg-gradient-dark mb-0" href="{% url 'orden_crear' %}" >
+                        <i class="material-icons text-sm">add</i>
+                        Orden Nueva</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenido -->
+        <div class="card-body p-3">
+            <div class="row">
+                <div class="card-body px-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class=" table-form-size">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Orden</th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        Total</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Estado</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        Gestión</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for comanda in comandas %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">Mesa {{comanda.mesa}}</h6>
+                                                <p class="text-xs text-secondary mb-0">{{comanda.fechaHora}}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">${{comanda.total}}</p>
+                                        <!-- <p class="text-xs text-secondary mb-0">Organization</p> -->
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        {% if comanda.cocina == 1 %}
+                                            <span class="badge badge-sm bg-gradient-danger">Cocina</span>
+                                        {% elif comanda.cocina > 1 %}
+                                            <span class="badge badge-sm bg-gradient-success">Cocina</span>
+                                        {% endif %}
+
+                                        {% if comanda.bebida == 1 %}
+                                            <span class="badge badge-sm bg-gradient-danger">Bebida</span>                                   
+                                        {% elif comanda.bebida > 1 %}
+                                            <span class="badge badge-sm bg-gradient-success">Bebida</span>
+                                        {% endif %}
+
+                                        {% if comanda.cobrable == 1 %}
+                                            <span class="badge badge-sm bg-gradient-faded-info">Entregado</span>
+                                            <p class="text-xs text-secondary mb-0">Se Puede Cobrar</p>
+                                        {% else %}
+                                            <span class="badge badge-sm bg-gradient-danger">Pendiente</span>
+                                            <!-- <p class="text-xs text-secondary mb-0"> </p> -->
+                                        {% endif %}
+                                    </td>
+                                    <td class="align-middle text-center ">
+                                        <a href="#" onclick="openModal('{{ comanda.id }}')" class="btn btn-link text-info text-gradient px-3 mb-0">
+                                            <i class="material-icons text me-2">visibility</i>
+                                            Detalle
+                                        </a>
+                                        &nbsp;
+                                        <a class="btn btn-link text-danger text-gradient px-3 mb-0" href="#" onclick="openDeleteModal('{{ comanda.id }}')">
+                                            <i class="material-icons text-sm me-2">delete</i>
+                                            Eliminar
+                                        </a>
+                                        &nbsp;
+                                        {% if comanda.cobrable == 1 %}
+                                        <a class="btn btn-link text-dark px-3 mb-0" href="#">
+                                            <i class="material-icons text-sm me-2">monetization_on</i>
+                                            Finalizar
+                                        </a>
+                                        {% else %}
+                                        <a class="btn btn-link text-dark px-3 mb-0" href="#">
+                                            -------
+                                        </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <!-- MODAL DE DETALLE-->
+                <dialog id="popup" class="modal-fade"
+                    style="border-radius: 0.8rem; border-color: #eb4e1b; align-items: center; align-content: center;">
+                    <div id="mod">
+            
+                    </div>
+                </dialog>
+                <!-- MODAL DE BORRADO -->
+                <dialog id="deletePopup" class="modal-fade"
+                    style="border-radius: 0.8rem; border-color: #eb4e1b; align-items: center; align-content: center;">
+                    <div id="delMod">
+            
+                    </div>
+                </dialog>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<script>
+    let modal = document.getElementById("popup");
+    let deleteModal = document.getElementById("deletePopup");
+
+    function openModal(id) {
+        $("#mod").html(""); // Cuerpo principal del modal
+
+        var request = $.ajax({
+            type: "GET",
+            url: "{% url 'orden_detalle' %}",
+            data: {
+                "id": id
+            },
+        });
+        request.done(function (response) {
+            $("#mod").html(response); // sobreescribir el contenido del modal segun la respuesta de la consulta
+            modal.showModal();
+        });
+    }
+
+    function cerrar_modal() {
+        $("#mod").html(""); // Cuerpo principal del modal
+        modal.close();
+    }
+
+    function openDeleteModal(id) {
+        $("#delMod").html(""); // Cuerpo principal del modal
+
+        var request = $.ajax({
+            type: "GET",
+            url: "{% url 'orden_preguntar_borrar' %}",
+            data: {
+                "id": id,
+                "action": 0
+            },
+        });
+        request.done(function (response) {
+            $("#delMod").html(response); // sobreescribir el contenido del modal segun la respuesta de la consulta
+            deleteModal.showModal();
+        });
+    }
+
+    function cerrar_delete_modal() {
+        $("#delMod").html(""); // Cuerpo principal del modal
+        deleteModal.close();
+    }
+
+</script>
+
+{% endblock content %}

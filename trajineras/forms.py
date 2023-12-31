@@ -27,34 +27,27 @@ class MenuForm(forms.ModelForm):
 			'activo':'Disponible',
 		}
 
-class OrdenTempForm(forms.ModelForm):
+class ComandaForm(forms.ModelForm):
 	class Meta:
-		model = OrdenTemp
+		model = Comanda
 		fields = [
-			 'mesa',
-			 'cliente'
+			 'mesa'
 		]
 		labels = {
-			'mesa': 'Mesa',
-			'cliente':'Cliente'
+			'mesa': 'Mesa'
 		}	
 		widgets = {
 			'mesa':forms.NumberInput (attrs={'class':'input-group input-group-outline'}),
-			'cliente':forms.TextInput(attrs={'class':'form-contol'}),
+			# 'notas':forms.Textarea(attrs={'class':'form-contol','rows':'5'}),
 		}	
 
-class OrdenMenuForm(forms.ModelForm):
+class OrdenForm(forms.ModelForm):
 	class Meta:
-		model = OrdenMenu
+		model = Orden
 		fields = [
-			'idOrden',
-			'idMenu',
-			'cantidad',
-			'nuevo'
+			 'comanda',
+			 'cocina',
+			 'bebida',
+			 'agregado',
+			 'nuevo'
 		]
-		labels = {
-			'idOrden': 'Orden',
-			'idMenu': 'Menu',
-			'cantidad': 'Cantidad',
-			'nuevo': 'Nuevo'
-		}	

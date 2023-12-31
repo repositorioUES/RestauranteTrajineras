@@ -1,0 +1,71 @@
+
+
+.select-form-size {
+    display: inline-block;
+    color: #111111;
+    width: 100%;
+}
+
+.number-input-form-size {
+    display: inline-block;
+    color: #111111;
+    width: 20%;
+}
+
+.textarea-size {
+    display: inline-block;
+    color: #111111;
+    width: 80%;
+}
+
+.btn-form-size {
+    padding: 0cap;
+    margin: 0cap;
+    width: 25%;
+    /* height: 2cap; */
+}
+
+.table-form-size {
+    width: 100%;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.margin-padding-zero {
+    padding: 0cap;
+    margin-left: 0cap;
+
+}
+
+.radio-style{
+    accent-color: #eb4e1b;
+    height: 2cap;
+    width: 2cap;
+}
+
+.pedido-card-size {
+    color: #111111;
+    padding: 0cap;
+    margin: 0cap;
+    width: 60%;
+}
+
+.info-card-size {
+    color: #111111;
+    padding: 0cap;
+    margin: 0cap;
+    width: 40%;
+}
+
+.lone-card-size {
+    color: #111111;
+    padding: 0cap;
+    margin: 0cap;
+    width: 80%;
+}
+
+/* th {
+    background-color: #eb4e1b;
+} */
